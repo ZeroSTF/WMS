@@ -10,9 +10,6 @@ import java.util.Date;
 
 
 @Entity
-@Table(name = "Transaction", indexes = {
-        @Index(name = "idx_transaction_id", columnList = "id")
-})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,22 +22,22 @@ public class Transaction implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    private Produits produits;
+    Produits produits;
     @Column(nullable = false)
-    private int quantity;
+    int quantity;
 
-    private Date date;
-    private boolean confirmation;
+    //@Temporal (TemporalType.DATE)
+    Date date;
+    boolean confirmation;
 
     @Column(length = 1000)
-    private String details;
+    String details;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    private Bon bon;
+    Bon bon;
 
 
 
@@ -48,60 +45,4 @@ public class Transaction implements Serializable {
 
 // Getters and setters
 
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Produits getProduits() {
-        return produits;
-    }
-
-    public void setProduits(Produits produits) {
-        this.produits = produits;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public boolean isConfirmation() {
-        return confirmation;
-    }
-
-    public void setConfirmation(boolean confirmation) {
-        this.confirmation = confirmation;
-    }
-
-    public String getDetails() {
-        return details;
-    }
-
-    public void setDetails(String details) {
-        this.details = details;
-    }
-
-    public Bon getBon() {
-        return bon;
-    }
-
-    public void setBon(Bon bon) {
-        this.bon = bon;
-    }
 }

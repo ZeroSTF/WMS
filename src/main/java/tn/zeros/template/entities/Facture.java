@@ -19,27 +19,27 @@ import java.sql.Date;
 public class Facture {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
     @Column(nullable = false)
-    private Date date;
+    Date date;
 
     @Column(name = "montant_total", nullable = false, precision = 10, scale = 2)
-    private BigDecimal montantTotal;
+    BigDecimal montantTotal;
 
     @ManyToOne
     @JoinColumn(name = "client_id")
-    private User client;
+    User client;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "paiement_mode", nullable = false)
-    private PaiementMode paiementMode;
+    PaiementMode paiementMode;
 
     @Column(name = "paiement_status", nullable = false)
-    private Boolean paiementStatus = false;
+    Boolean paiementStatus = false;
 
     @ManyToOne
     @JoinColumn(name = "bon_id")
-    private Bon bon;
+    Bon bon;
 
 }
