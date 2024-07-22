@@ -14,18 +14,18 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/transaction")
-@CrossOrigin(origins = "http://localhost:8080", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 @Slf4j
 public class TransactionController {
     private final TransactionService transactionService;
 
 
-    @GetMapping
+    @GetMapping("transactions")
     public List<Transaction> getAllTransactions() {
         return transactionService.findAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/transaction/{id}")
     public ResponseEntity<Transaction> getTransactionById(@PathVariable Long id) {
         Transaction transaction = transactionService.findById(id);
 
@@ -36,7 +36,7 @@ public class TransactionController {
 
     }
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<Void> createTransaction(@RequestBody Transaction transaction) {
         Transaction transactionAdded = transactionService.save(transaction);
 
@@ -54,7 +54,7 @@ public class TransactionController {
 
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<Transaction> updateTransaction(@PathVariable Long id, @RequestBody Transaction transaction) {
         transaction.setId(id);
         Transaction updatedTransaction = transactionService.save(transaction);
@@ -67,7 +67,7 @@ public class TransactionController {
 
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteTransaction(@PathVariable Long id) {
         transactionService.deleteById(id);
         return ResponseEntity.noContent().build();

@@ -29,6 +29,18 @@ public class User implements Serializable, UserDetails {
     String email;
     String password;
 
+    String code;
+    String societe;
+    String adresse;
+    String mf; // assuming this stands for something specific, e.g., "matricule fiscale"
+    String tel;
+    String fax;
+    String mob;
+    String secteur;
+    String ville;
+    String classeCompt; // assuming this stands for "classe comptable"
+    String devise;
+
     @ManyToMany(fetch = FetchType.EAGER)
     Set<Role> role;
     @Enumerated(EnumType.STRING)

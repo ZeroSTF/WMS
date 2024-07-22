@@ -14,13 +14,13 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/facture")
-@CrossOrigin(origins = "http://localhost:8080", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 @Slf4j
 public class FactureController {
     private final FactureService factureService;
 
 
-    @GetMapping
+    @GetMapping("/factures")
     public List<Facture> getAllFactures() {
         return factureService.findAll();
     }
@@ -34,7 +34,7 @@ public class FactureController {
         return ResponseEntity.ok(facture);
     }
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<Void> createFacture(@RequestBody Facture facture) {
         Facture factureAdded = factureService.save(facture);
 
@@ -51,7 +51,7 @@ public class FactureController {
         return ResponseEntity.created(location).build();
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<Facture> updateFacture(@PathVariable Long id, @RequestBody Facture facture) {
         facture.setId(id);
         Facture updatedFacture = factureService.save(facture);
@@ -61,7 +61,7 @@ public class FactureController {
         return ResponseEntity.ok(updatedFacture);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteFacture(@PathVariable Long id) {
         factureService.deleteById(id);
         return ResponseEntity.noContent().build();

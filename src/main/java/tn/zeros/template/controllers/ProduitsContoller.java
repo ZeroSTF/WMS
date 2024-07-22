@@ -13,18 +13,18 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/stock")
-@CrossOrigin(origins = "http://localhost:8080", allowCredentials = "true")
+@RequestMapping("/produit")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 @Slf4j
 public class ProduitsContoller {
     private final ProduitsService produitsService;
 
-    @GetMapping
+    @GetMapping("/product-list")
     public List<Produits> getAllProduits() {
         return produitsService.findAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/produit/{id}")
     public ResponseEntity<Produits> getProduitById(@PathVariable Long id) {
         Produits produit = produitsService.findById(id);
         if (produit == null) {
@@ -33,7 +33,7 @@ public class ProduitsContoller {
         return ResponseEntity.ok(produit);
     }
 
-    @PostMapping
+    @PostMapping("/add-product")
     public ResponseEntity<Void> createProduit(@RequestBody Produits produit) {
         Produits produitAdded = produitsService.save(produit);
 
@@ -50,7 +50,7 @@ public class ProduitsContoller {
         return ResponseEntity.created(location).build();
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<Produits> updateProduit(@PathVariable Long id, @RequestBody Produits produit) {
         produit.setId(id);
         Produits updatedProduit = produitsService.save(produit);
@@ -60,7 +60,7 @@ public class ProduitsContoller {
         return ResponseEntity.ok(updatedProduit);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteProduit(@PathVariable Long id) {
         produitsService.deleteById(id);
         return ResponseEntity.noContent().build();
