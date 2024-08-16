@@ -34,4 +34,5 @@ public class ProduitsService implements IProduitsService {
     public void deleteById(Long id) {
         produitRepository.deleteById(id);
     }
+
 }

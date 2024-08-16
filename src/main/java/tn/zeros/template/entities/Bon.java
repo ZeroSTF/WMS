@@ -1,9 +1,15 @@
 package tn.zeros.template.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import tn.zeros.template.entities.enums.BonType;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Getter
@@ -13,6 +19,7 @@ import tn.zeros.template.entities.enums.BonType;
 @AllArgsConstructor
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
+//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Bon{
 
     @Id
@@ -21,5 +28,20 @@ public class Bon{
     @Enumerated(EnumType.STRING)
     BonType type;
 
+   // @JsonBackReference
+    @OneToMany(mappedBy = "bon")
+    private List<Transaction> transactions;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    //@JsonIgnoreProperties("bons")
+    private User receiver;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    //@JsonIgnoreProperties("bons")
+    private User sender;
+
+    private LocalDate date;
+    boolean status=false;
+    boolean factured=false;
 
 }

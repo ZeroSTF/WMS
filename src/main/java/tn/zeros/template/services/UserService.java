@@ -175,4 +175,19 @@ public class UserService implements IUserService {
     public User loadUserByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
     }
+
+    @Override
+    public User findById(Long receiverId) {
+        return userRepository.findById(receiverId).orElseThrow(() -> new EntityNotFoundException("User not found with id: " + receiverId));
+    }
+
+
+    /********curent user
+    private User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentEmail = authentication.getName();
+        return userService.loadUserByEmail(currentEmail);
+    }
+     **/
+
 }

@@ -7,6 +7,8 @@ import tn.zeros.template.entities.enums.PaiementMode;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Getter
@@ -20,26 +22,15 @@ public class Facture {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-
-    @Column(nullable = false)
-    Date date;
-
-    @Column(name = "montant_total", nullable = false, precision = 10, scale = 2)
+    LocalDate date;
     BigDecimal montantTotal;
 
-    @ManyToOne
-    @JoinColumn(name = "client_id")
-    User client;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "paiement_mode", nullable = false)
     PaiementMode paiementMode;
-
-    @Column(name = "paiement_status", nullable = false)
     Boolean paiementStatus = false;
 
-    @ManyToOne
-    @JoinColumn(name = "bon_id")
-    Bon bon;
+    @OneToMany
+    List<Bon> bon;
 
 }

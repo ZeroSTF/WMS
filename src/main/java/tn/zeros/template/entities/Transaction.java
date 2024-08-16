@@ -1,15 +1,18 @@
 package tn.zeros.template.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.springframework.data.jpa.repository.Temporal;
 
 import java.io.Serializable;
-import java.util.Date;
 
 
 @Entity
+//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,27 +21,36 @@ import java.util.Date;
 @Builder
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Transaction implements Serializable {
+public class Transaction  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    Produits produits;
+   // @ManyToOne(fetch = FetchType.EAGER)
+   // @JsonIgnore
+   // Produits produits;
     @Column(nullable = false)
     int quantity;
+    private Double montant;
 
-    //@Temporal (TemporalType.DATE)
-    Date date;
-    boolean confirmation;
+    @ManyToOne(fetch = FetchType.EAGER)
+    //@JsonManagedReference
+    @JsonIgnore
+    private Bon bon;
 
     @Column(length = 1000)
     String details;
 
+    @ToString.Exclude
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "produits_id")
+    private Produits produits;
+
+/*
     @ManyToOne(fetch = FetchType.EAGER)
     Bon bon;
-
+*/
 
 
 

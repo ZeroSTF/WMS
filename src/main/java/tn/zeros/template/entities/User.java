@@ -10,7 +10,6 @@ import tn.zeros.template.entities.enums.UStatus;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -96,5 +95,10 @@ public class User implements Serializable, UserDetails {
     @Override
     public int hashCode() {
         return Objects.hash(email);
+    }
+
+
+    public void setAddress(String adresse) {
+        this.adresse = adresse;
     }
 }

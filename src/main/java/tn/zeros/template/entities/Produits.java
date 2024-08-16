@@ -1,8 +1,11 @@
 package tn.zeros.template.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.io.Serializable;
 
 @Entity
 @Getter
@@ -12,7 +15,8 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Produits {
+//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+public class Produits implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

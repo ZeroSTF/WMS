@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/produit")
+@RequestMapping("/admin")
 @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 @Slf4j
 public class ProduitsContoller {
@@ -65,5 +65,4 @@ public class ProduitsContoller {
         produitsService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
-
 }
