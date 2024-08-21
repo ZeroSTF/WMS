@@ -36,7 +36,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/user/{email}")
+   /* @GetMapping("/userByemail")
     public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
         User user = userService.loadUserByEmail(email);
         if (user != null) {
@@ -44,7 +44,17 @@ public class UserController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-    }
+    }*/
+   @GetMapping("/search")
+   public ResponseEntity<User> getUserByEmail(@RequestParam String email) {
+       log.info("Searching for user with email: {}", email);
+       User user = userService.loadUserByEmail(email);
+       if (user != null) {
+           return ResponseEntity.ok(user);
+       } else {
+           return ResponseEntity.notFound().build();
+       }
+   }
 
     // Ajouter un nouvel utilisateur
     @PostMapping("/add-user")

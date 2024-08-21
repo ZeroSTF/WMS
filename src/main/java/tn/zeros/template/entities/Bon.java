@@ -32,12 +32,12 @@ public class Bon{
     @OneToMany(mappedBy = "bon")
     private List<Transaction> transactions;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    //@JsonIgnoreProperties("bons")
+    @ManyToOne(fetch = FetchType.EAGER)
+    
     private User receiver;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    //@JsonIgnoreProperties("bons")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
     private User sender;
 
     private LocalDate date;

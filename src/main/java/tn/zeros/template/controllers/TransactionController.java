@@ -146,7 +146,7 @@ public ResponseEntity<?> getAllTransactions() {
 
 
     }*/
-
+/*
     @PostMapping("/create")
     public ResponseEntity<Bon> createBon(@RequestParam Long senderId,
                                          @RequestParam Long receiverId,
@@ -172,14 +172,15 @@ public ResponseEntity<?> getAllTransactions() {
         // Retourne le Bon créé
         return ResponseEntity.status(HttpStatus.CREATED).body(bon);
     }
-
+*/
     @PostMapping("/create-bon")
-    public ResponseEntity<Bon> createBon(@RequestParam Long receiverId, @RequestBody List<Long> transactionIds) {
+    public ResponseEntity<Bon> createBon(@RequestParam Long senderId,@RequestParam Long receiverId, @RequestBody List<Long> transactionIds) {
         //current user
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+      /*  Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentEmail = authentication.getName();
         User sender = userService.loadUserByEmail(currentEmail);
-
+*/
+        User sender = userService.findById(senderId);
         if (sender == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -197,6 +198,21 @@ public ResponseEntity<?> getAllTransactions() {
         Bon bon = transactionService.createBon(sender, receiver, transactions);
         return ResponseEntity.status(HttpStatus.CREATED).body(bon);
     }
+/*@PostMapping("/create-bon")
+public ResponseEntity<?> createBon(@RequestParam Long senderId, @RequestParam Long receiverId, @RequestBody List<Long> transactionIds) {
+    try {
+        User sender = userService.findById(senderId);
+        User receiver = userService.findById(receiverId);
+        List<Transaction> transactions = transactionService.findAllById(transactionIds);
+
+        Bon bon = transactionService.createBon(sender, receiver, transactions);
+        return ResponseEntity.status(HttpStatus.CREATED).body(bon);
+    } catch (IllegalArgumentException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred");
+    }
+}*/
 
 /******************* QRCode***************/
    /* @GetMapping("/{id}/qrcode")

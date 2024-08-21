@@ -98,9 +98,9 @@ public class TransactionService implements ITransactionService {
     @Transactional
     public Bon createBon(User sender, User receiver, List<Transaction> transactions) {
         // Déterminer le type de bon en fonction du rôle du receiver
-        BonType bonType = receiver.getRole().stream()
+        BonType bonType = BonType.valueOf("commande"); /*receiver.getRole().stream()
                 .anyMatch(role -> role.getType() == TypeRole.AGENT) ? BonType.commande : BonType.livraison;
-
+*/
         // Création du Bon
         Bon bon = new Bon();
         bon.setType(bonType);
@@ -110,11 +110,11 @@ public class TransactionService implements ITransactionService {
         bon.setTransactions(transactions);
         bon.setStatus(false);
 
-
+        bonRepository.save(bon);
         // Gestion des transactions et des produits
         for (Transaction transaction : transactions) {
 
-            Produits produit = transaction.getProduits();
+        /*    Produits produit = transaction.getProduits();
 
             // Diminuer la quantité de produits dans le dépôt de l'expéditeur (sender)
             if (produit.getQte() >= transaction.getQuantity()) {
@@ -122,7 +122,7 @@ public class TransactionService implements ITransactionService {
             } else {
                 throw new IllegalArgumentException("Quantité insuffisante pour le produit: " + produit.getRefArt());
             }
-
+*/
             // Augmenter la quantité de produits dans le dépôt du destinataire (receiver)
         /*    Produits receiverProduct = produitsRepository.findByUserAndName(receiver, produit.getName())
                     .orElse(new Produits(produit.getName(), 0, receiver.getDepot()));
@@ -133,12 +133,12 @@ public class TransactionService implements ITransactionService {
             transaction.setBon(bon);
 
             // Sauvegarde des produits dans les dépôts respectifs
-            produitsRepository.save(produit);
+          //  produitsRepository.save(produit);
     //        produitsRepository.save(receiverProduct);
         }
 
         // Sauvegarde du Bon et des transactions
-        bonRepository.save(bon);
+
         transactionRepository.saveAll(transactions);
 
         return bon;

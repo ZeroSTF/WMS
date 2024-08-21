@@ -8,6 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tn.zeros.template.controllers.DTO.BonLivraisonDTO;
+import tn.zeros.template.controllers.DTO.CreateBonRequest;
 import tn.zeros.template.entities.Bon;
 import tn.zeros.template.entities.Transaction;
 import tn.zeros.template.entities.User;
@@ -16,6 +17,7 @@ import tn.zeros.template.repositories.BonRepository;
 import tn.zeros.template.repositories.TransactionRepository;
 import tn.zeros.template.repositories.UserRepository;
 import tn.zeros.template.services.IServices.IBonService;
+
 
 import java.time.LocalDate;
 import java.util.List;
@@ -111,4 +113,31 @@ public class BonService implements IBonService {
         // Sauvegarder le bon
         return bonRepository.save(bon);
     }
+
+
+
+    public Bon createBonCommande(CreateBonRequest request) {
+        // Validation (peut être améliorée avec des annotations de validation)
+        if (request.getSenderId() == null || request.getReceiverId() == null || request.getTransactionIds().isEmpty()) {
+            throw new IllegalArgumentException("Données de la commande incomplètes");
+        }
+
+        // Récupération des entités
+        User sender = userRepository.findById(request.getSenderId())
+                .orElseThrow(() -> new EntityNotFoundException("Émetteur introuvable"));
+        User receiver = userRepository.findById(request.getReceiverId())
+                .orElseThrow(() -> new EntityNotFoundException("Destinataire introuvable"));
+
+        // Création du bon
+        Bon bon = Bon.builder()
+                .type(BonType.commande)
+                .sender(sender)
+                .receiver(receiver)
+                .date(LocalDate.now())
+                .transactions(transactionRepository.findAllById(request.getTransactionIds()))
+                .build();
+
+        return bonRepository.save(bon);
+    }
+
 }
