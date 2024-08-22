@@ -43,5 +43,6 @@ public class Bon{
     private LocalDate date;
     boolean status=false;
     boolean factured=false;
+    boolean tofactur=false;
 
 }

@@ -3,10 +3,7 @@ package tn.zeros.template.services;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import tn.zeros.template.controllers.DTO.BonLivraisonDTO;
 import tn.zeros.template.controllers.DTO.CreateBonRequest;
 import tn.zeros.template.entities.Bon;
@@ -20,6 +17,7 @@ import tn.zeros.template.services.IServices.IBonService;
 
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,6 +78,10 @@ public class BonService implements IBonService {
     public Bon findById(Long id) {
         return bonRepository.findById(id).orElse(null);
     }
+    @Override
+    public List<Transaction> findByUser(User user) {
+        return transactionRepository.findTransactionByUser(user);
+    }
 
     @Override
     public Bon save(Bon bon) {
@@ -116,7 +118,7 @@ public class BonService implements IBonService {
 
 
 
-    public Bon createBonCommande(CreateBonRequest request) {
+    /*public Bon createBonCommande(CreateBonRequest request) {
         // Validation (peut être améliorée avec des annotations de validation)
         if (request.getSenderId() == null || request.getReceiverId() == null || request.getTransactionIds().isEmpty()) {
             throw new IllegalArgumentException("Données de la commande incomplètes");
@@ -136,6 +138,82 @@ public class BonService implements IBonService {
                 .date(LocalDate.now())
                 .transactions(transactionRepository.findAllById(request.getTransactionIds()))
                 .build();
+
+        return bonRepository.save(bon);
+    }
+
+     */
+    /*public Bon createBonCommande(CreateBonRequest request) {
+        // Validation (enhanced with annotations for clarity)
+        if (request.getSenderId() == null || request.getReceiverId() == null || request.getTransactionIds().isEmpty()) {
+            throw new IllegalArgumentException("Incomplete bon creation data: senderId, receiverId, or transactionIds are missing.");
+        }
+
+        // Efficient transaction retrieval & association (Optional Optimization)
+        List<Transaction> transactions;
+        if (request.getTransactionIds().size() == 1) {
+            transactions = Collections.singletonList(transactionRepository.findById(request.getTransactionIds().get(0))
+                    .orElseThrow(() -> new EntityNotFoundException("Transaction not found")));
+        } else {
+            transactions = transactionRepository.findAllById(request.getTransactionIds());
+        }
+
+        // Bon creation and transaction association
+        User sender = userRepository.findById(request.getSenderId())
+                .orElseThrow(() -> new EntityNotFoundException("Sender not found"));
+        User receiver = userRepository.findById(request.getReceiverId())
+                .orElseThrow(() -> new EntityNotFoundException("Receiver not found"));
+
+        Bon bon = Bon.builder()
+                .type(BonType.commande)
+                .sender(sender)
+                .receiver(receiver)
+                .date(LocalDate.now())
+                .transactions(transactions)
+                .build();
+
+        // Explicit transaction association for unidirectional relationships
+        for (Transaction transaction : bon.getTransactions()) {
+            transaction.setBon(bon); // Assuming `Transaction` has a `setBon` method
+        }
+
+        return bonRepository.save(bon);
+    }*/
+    public Bon createBonCommande(CreateBonRequest request) {
+        long senderId=1;
+        // Validation (enhanced with annotations for clarity)
+        if ( request.getReceiverId() == null || request.getTransactionIds().isEmpty()) {
+            throw new IllegalArgumentException("Incomplete bon creation data:  receiverId, or transactionIds are missing.");
+        }
+
+        // Efficient transaction retrieval & association (Optional Optimization)
+        List<Transaction> transactions;
+        if (request.getTransactionIds().size() == 1) {
+            transactions = Collections.singletonList(transactionRepository.findById(request.getTransactionIds().get(0))
+                    .orElseThrow(() -> new EntityNotFoundException("Transaction not found")));
+        } else {
+            transactions = transactionRepository.findAllById(request.getTransactionIds());
+        }
+
+        // Bon creation and transaction association
+        Optional<User> sender = userRepository.findById(senderId);
+        User receiver = userRepository.findById(request.getReceiverId())
+                .orElseThrow(() -> new EntityNotFoundException("Receiver not found"));
+        boolean tofactur = request.isTofactur();
+
+        Bon bon = Bon.builder()
+                .type(BonType.commande)
+                //.sender(sender)
+                .receiver(receiver)
+                .date(LocalDate.now())
+                .transactions(transactions)
+                .tofactur(tofactur)
+                .build();
+
+        // Explicit transaction association for unidirectional relationships
+        for (Transaction transaction : bon.getTransactions()) {
+            transaction.setBon(bon); // Assuming `Transaction` has a `setBon` method
+        }
 
         return bonRepository.save(bon);
     }

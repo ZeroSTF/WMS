@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/facture")
+@RequestMapping("/admin")
 @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 @Slf4j
 public class FactureController {
@@ -25,7 +25,7 @@ public class FactureController {
         return factureService.findAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/facture/{id}")
     public ResponseEntity<Facture> getFactureById(@PathVariable Long id) {
         Facture facture = factureService.findById(id);
         if (facture == null) {
@@ -34,7 +34,7 @@ public class FactureController {
         return ResponseEntity.ok(facture);
     }
 
-    @PostMapping("/add")
+    @PostMapping("/facture/add")
     public ResponseEntity<Void> createFacture(@RequestBody Facture facture) {
         Facture factureAdded = factureService.save(facture);
 
@@ -51,7 +51,7 @@ public class FactureController {
         return ResponseEntity.created(location).build();
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/facture/update/{id}")
     public ResponseEntity<Facture> updateFacture(@PathVariable Long id, @RequestBody Facture facture) {
         facture.setId(id);
         Facture updatedFacture = factureService.save(facture);
@@ -61,7 +61,7 @@ public class FactureController {
         return ResponseEntity.ok(updatedFacture);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/facture/delete/{id}")
     public ResponseEntity<Void> deleteFacture(@PathVariable Long id) {
         factureService.deleteById(id);
         return ResponseEntity.noContent().build();

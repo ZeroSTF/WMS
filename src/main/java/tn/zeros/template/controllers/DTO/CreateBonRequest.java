@@ -13,4 +13,5 @@ public class CreateBonRequest {
     private Long senderId;
     private Long receiverId;
     private List<Long> transactionIds;
+    private boolean tofactur;
 }
