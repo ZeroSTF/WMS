@@ -102,5 +102,4 @@ public class StockService implements IStockService {
             return Collections.emptyList();
         }
     }
-
 }

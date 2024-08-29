@@ -28,4 +28,5 @@ public class StockItem {
 
     @Column(nullable = false)
     private int quantity;
+
 }

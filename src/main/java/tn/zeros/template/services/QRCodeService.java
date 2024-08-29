@@ -49,6 +49,7 @@ public class QRCodeService {
     }
 }
 
+
 /*public byte[] generateQRCodeImage(Bon bon) throws Exception {
         String bonInfo = String.valueOf(bon.getId());
 
