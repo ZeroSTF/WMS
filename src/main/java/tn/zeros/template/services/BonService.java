@@ -6,20 +6,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import tn.zeros.template.controllers.DTO.BonLivraisonDTO;
 import tn.zeros.template.controllers.DTO.CreateBonRequest;
-import tn.zeros.template.entities.Bon;
-import tn.zeros.template.entities.Transaction;
-import tn.zeros.template.entities.User;
+import tn.zeros.template.entities.*;
 import tn.zeros.template.entities.enums.BonType;
-import tn.zeros.template.repositories.BonRepository;
-import tn.zeros.template.repositories.TransactionRepository;
-import tn.zeros.template.repositories.UserRepository;
+import tn.zeros.template.repositories.*;
 import tn.zeros.template.services.IServices.IBonService;
 
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
 
 @RequiredArgsConstructor
 @Service
@@ -30,6 +28,8 @@ public class BonService implements IBonService {
 
     private final TransactionRepository transactionRepository;
     private final UserRepository userRepository;
+    private final StockItemRepository stockItemRepository;
+    private final StockRepository stockRepository;
 
 
 /*
@@ -118,104 +118,120 @@ public class BonService implements IBonService {
 
 
 
-    /*public Bon createBonCommande(CreateBonRequest request) {
-        // Validation (peut être améliorée avec des annotations de validation)
-        if (request.getSenderId() == null || request.getReceiverId() == null || request.getTransactionIds().isEmpty()) {
-            throw new IllegalArgumentException("Données de la commande incomplètes");
+    public Bon createBonCommande(CreateBonRequest request) {
+        // Validation des données d'entrée
+        if (request.getReceiverId() == null || request.getSenderId() == null || request.getTransactionIds().isEmpty()) {
+            throw new IllegalArgumentException("Incomplete bon creation data: receiverId, or transactionIds are missing.");
         }
 
-        // Récupération des entités
-        User sender = userRepository.findById(request.getSenderId())
-                .orElseThrow(() -> new EntityNotFoundException("Émetteur introuvable"));
-        User receiver = userRepository.findById(request.getReceiverId())
-                .orElseThrow(() -> new EntityNotFoundException("Destinataire introuvable"));
-
-        // Création du bon
-        Bon bon = Bon.builder()
-                .type(BonType.commande)
-                .sender(sender)
-                .receiver(receiver)
-                .date(LocalDate.now())
-                .transactions(transactionRepository.findAllById(request.getTransactionIds()))
-                .build();
-
-        return bonRepository.save(bon);
-    }
-
-     */
-    /*public Bon createBonCommande(CreateBonRequest request) {
-        // Validation (enhanced with annotations for clarity)
-        if (request.getSenderId() == null || request.getReceiverId() == null || request.getTransactionIds().isEmpty()) {
-            throw new IllegalArgumentException("Incomplete bon creation data: senderId, receiverId, or transactionIds are missing.");
+        // Récupération des transactions
+        List<Transaction> transactions = transactionRepository.findAllById(request.getTransactionIds());
+        if (transactions.isEmpty()) {
+            throw new EntityNotFoundException("No transactions found for given IDs.");
         }
 
-        // Efficient transaction retrieval & association (Optional Optimization)
-        List<Transaction> transactions;
-        if (request.getTransactionIds().size() == 1) {
-            transactions = Collections.singletonList(transactionRepository.findById(request.getTransactionIds().get(0))
-                    .orElseThrow(() -> new EntityNotFoundException("Transaction not found")));
-        } else {
-            transactions = transactionRepository.findAllById(request.getTransactionIds());
-        }
-
-        // Bon creation and transaction association
+        // Récupération de l'expéditeur et du destinataire
         User sender = userRepository.findById(request.getSenderId())
                 .orElseThrow(() -> new EntityNotFoundException("Sender not found"));
         User receiver = userRepository.findById(request.getReceiverId())
                 .orElseThrow(() -> new EntityNotFoundException("Receiver not found"));
 
-        Bon bon = Bon.builder()
-                .type(BonType.commande)
-                .sender(sender)
-                .receiver(receiver)
-                .date(LocalDate.now())
-                .transactions(transactions)
-                .build();
+        // Récupérer les stocks des utilisateurs
+        Stock senderStock = sender.getStock();
+        Stock receiverStock = receiver.getStock();
 
-        // Explicit transaction association for unidirectional relationships
-        for (Transaction transaction : bon.getTransactions()) {
-            transaction.setBon(bon); // Assuming `Transaction` has a `setBon` method
+        if (senderStock == null || receiverStock == null) {
+            throw new IllegalArgumentException("Les stocks de l'expéditeur ou du destinataire ne peuvent pas être trouvés.");
         }
 
-        return bonRepository.save(bon);
-    }*/
-    public Bon createBonCommande(CreateBonRequest request) {
-        long senderId=1;
-        // Validation (enhanced with annotations for clarity)
-        if ( request.getReceiverId() == null || request.getTransactionIds().isEmpty()) {
-            throw new IllegalArgumentException("Incomplete bon creation data:  receiverId, or transactionIds are missing.");
+        // Vérification des stocks disponibles
+        /*for (Transaction transaction : transactions) {
+            Produits produit = transaction.getProduits();
+            int transactionQuantity = transaction.getQuantity();
+
+           // Trouver l'article de stock correspondant dans le stock de l'expéditeur
+            Optional<StockItem> senderStockItemOpt = senderStock.getStockItems().stream()
+                    .filter(item -> item.getProduit().equals(produit))
+                    .findFirst();
+
+            if (senderStockItemOpt.isEmpty() || senderStockItemOpt.get().getQuantity() < transactionQuantity) {
+                throw new IllegalArgumentException("Stock insuffisant pour le produit: " + senderStockItemOpt.get().getProduit().getRefArt() );
+            }
+
+
+        }*/
+
+        // Mise à jour des quantités de stock
+        for (Transaction transaction : transactions) {
+            Produits produit = transaction.getProduits();
+            int transactionQuantity = transaction.getQuantity();
+
+            // Déduire du stock de l'expéditeur
+            StockItem senderStockItem = senderStock.getStockItems().stream()
+                    .filter(item -> item.getProduit().equals(produit))
+                    .findAny()
+                    .orElseThrow(() -> new IllegalArgumentException("Produit non trouvé dans le stock de l'expéditeur: " + produit.getRefArt() ));
+
+            senderStockItem.setQuantity(senderStockItem.getQuantity() - transactionQuantity);
+
+            // Ajouter au stock du destinataire
+            Optional<StockItem> receiverStockItemOpt = receiverStock.getStockItems().stream()
+                    .filter(item -> item.getProduit().equals(produit))
+                    .findFirst();
+
+            if (receiverStockItemOpt.isPresent()) {
+                StockItem receiverStockItem = receiverStockItemOpt.get();
+                receiverStockItem.setQuantity(receiverStockItem.getQuantity() + transactionQuantity);
+            } else {
+                // Si le produit n'est pas encore dans le stock du destinataire, l'ajouter
+                StockItem newReceiverStockItem = new StockItem();
+                newReceiverStockItem.setStock(receiverStock);
+                newReceiverStockItem.setProduit(produit);
+                newReceiverStockItem.setQuantity(transactionQuantity);
+                receiverStock.getStockItems().add(newReceiverStockItem);
+            }
         }
 
-        // Efficient transaction retrieval & association (Optional Optimization)
-        List<Transaction> transactions;
-        if (request.getTransactionIds().size() == 1) {
-            transactions = Collections.singletonList(transactionRepository.findById(request.getTransactionIds().get(0))
-                    .orElseThrow(() -> new EntityNotFoundException("Transaction not found")));
-        } else {
-            transactions = transactionRepository.findAllById(request.getTransactionIds());
-        }
+        // Sauvegarder les modifications de stock
+        stockRepository.save(senderStock);
+        stockRepository.save(receiverStock);
 
-        // Bon creation and transaction association
-        Optional<User> sender = userRepository.findById(senderId);
-        User receiver = userRepository.findById(request.getReceiverId())
-                .orElseThrow(() -> new EntityNotFoundException("Receiver not found"));
-        boolean tofactur = request.isTofactur();
+        // Création du bon
+        Bon bon = new Bon();
+        bon.setSender(sender);
+        bon.setReceiver(receiver);
+        bon.setTransactions(transactions);
+        bon.setDate(LocalDate.now());
 
-        Bon bon = Bon.builder()
-                .type(BonType.commande)
-                //.sender(sender)
-                .receiver(receiver)
-                .date(LocalDate.now())
-                .transactions(transactions)
-                .tofactur(tofactur)
-                .build();
+        // Vérification du rôle de l'utilisateur destinataire
+        bon.setType(BonType.commande);
 
-        // Explicit transaction association for unidirectional relationships
-        for (Transaction transaction : bon.getTransactions()) {
-            transaction.setBon(bon); // Assuming `Transaction` has a `setBon` method
-        }
+        bon.setStatus(false);
+        bon.setTofactur(false);
+        bon.setFactured(false);
 
-        return bonRepository.save(bon);
+        // Sauvegarde du bon
+        bonRepository.save(bon);
+
+        return bon;
     }
 
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
