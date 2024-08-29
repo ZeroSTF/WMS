@@ -32,7 +32,7 @@ public class Stock {
     @JsonIgnore
     private User user;
 
-    //@ToString.Exclude
+    @ToString.Exclude
     @OneToMany(cascade = CascadeType.ALL)
     private List<StockItem> stockItems;
 
