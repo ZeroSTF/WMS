@@ -18,10 +18,11 @@ public class StockItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnore
     private Stock stock;
 
+    //@ToString.Exclude
     @ManyToOne(cascade = CascadeType.ALL)
     private Produits produit;
 

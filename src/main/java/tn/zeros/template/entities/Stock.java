@@ -27,10 +27,12 @@ public class Stock {
     @Column(columnDefinition = "TEXT")
     String details;
 
+
     @OneToOne(cascade = CascadeType.ALL)
     @JsonIgnore
     private User user;
 
+    //@ToString.Exclude
     @OneToMany(cascade = CascadeType.ALL)
     private List<StockItem> stockItems;
 

@@ -13,8 +13,7 @@ import tn.zeros.template.services.IServices.IBonService;
 
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +27,6 @@ public class BonService implements IBonService {
 
     private final TransactionRepository transactionRepository;
     private final UserRepository userRepository;
-    private final StockItemRepository stockItemRepository;
     private final StockRepository stockRepository;
 
 
