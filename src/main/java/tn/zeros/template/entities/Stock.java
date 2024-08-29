@@ -35,5 +35,4 @@ public class Stock {
     @ToString.Exclude
     @OneToMany(cascade = CascadeType.ALL)
     private List<StockItem> stockItems;
-
 }

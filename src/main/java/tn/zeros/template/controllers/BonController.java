@@ -73,6 +73,7 @@ public class BonController {
                 .body(bon);
     }
 
+
 /*************** Code QR  *********************************************/
 
     @GetMapping("/{id}/qrcode")

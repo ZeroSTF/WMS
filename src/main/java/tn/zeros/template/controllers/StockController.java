@@ -24,6 +24,7 @@ public class StockController {
         return ResponseEntity.ok(stockItems);
     }
 */
+
     @GetMapping("/stock/{userId}")
     public ResponseEntity<List<StockItem>> getStockByUserId(@PathVariable Long userId) {
         List<StockItem> stockItems = stockService.getStockByUserId(userId);

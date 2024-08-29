@@ -29,7 +29,6 @@ public class BonService implements IBonService {
     private final UserRepository userRepository;
     private final StockRepository stockRepository;
 
-
 /*
     @Transactional
     public Bon createBon(List<Long> transactionIds, String receiverEmail, String receiverAddress) {
