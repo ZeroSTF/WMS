@@ -23,4 +23,5 @@ public interface IUserService {
     User loadUserByEmail(String email);
 
     User findById(Long receiverId);
+    //User getCurrentUser();
 }

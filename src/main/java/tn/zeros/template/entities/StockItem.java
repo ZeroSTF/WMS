@@ -5,8 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.List;
-
 @Entity
 @Getter
 @Setter
@@ -15,23 +13,18 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Stock {
+public class StockItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(nullable = false, length = 100)
-    String name;
-
-
-    @Column(columnDefinition = "TEXT")
-    String details;
-
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JsonIgnore
-    private User user;
+    private Stock stock;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<StockItem> stockItems;
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Produits produit;
 
+    @Column(nullable = false)
+    private int quantity;
 }

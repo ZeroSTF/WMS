@@ -45,6 +45,9 @@ public class User implements Serializable, UserDetails {
     @Enumerated(EnumType.STRING)
     UStatus status;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private Stock stock;
+
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities()  {

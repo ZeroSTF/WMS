@@ -181,7 +181,14 @@ public class UserService implements IUserService {
         return userRepository.findById(receiverId).orElseThrow(() -> new EntityNotFoundException("User not found with id: " + receiverId));
     }
 
+  /*  @Override
+    public User getCurrentUser(){
+        String username=SecurityContextHolder.getContext().getAuthentication().getName();
 
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with username: " + username));
+    }
+*/
     /********curent user
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
