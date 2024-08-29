@@ -9,4 +9,6 @@ import java.util.List;
 public interface StockItemRepository extends JpaRepository<StockItem,Long> {
     List<StockItem> findByStock(Stock userStock);
 
+  StockItem findByStockIdAndProduitId(Long stockId, Long produitId);
+
 }
