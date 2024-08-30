@@ -9,4 +9,5 @@ public interface IProduitsService {
     Produits findById(Long id);
     Produits save(Produits produit);
     void deleteById(Long id);
+    Long produitscount();
 }

@@ -35,21 +35,12 @@ public class BonController {
     private final QRCodeService qrCodeService;
     final FactureService factureService;
 
-    @PostMapping("/Bon/livraison")
-    public ResponseEntity<Bon> createBonLivraison(@RequestBody BonLivraisonDTO bonLivraisonDTO) {
-        Bon createdBon = bonService.createBonLivraison(bonLivraisonDTO);
-        return new ResponseEntity<>(createdBon, HttpStatus.CREATED);
-    }
-
 
     @GetMapping("/bon-list")
     public ResponseEntity<List<Bon>> getBonList() {
         List<Bon> bons = bonService.findAll();
         return ResponseEntity.ok(bons);
     }
-
-
-
 
     @GetMapping("/getAllBonsByUser")
     public ResponseEntity<?> getAllBonsByUser() {
@@ -73,6 +64,19 @@ public class BonController {
                 .body(bon);
     }
 
+    @GetMapping("/bons/livraison/count")
+    public Long getLivraisonBonCount() {
+        return bonService.count();
+    }
+
+    @GetMapping("/mes-bons-commande")
+    public List<Bon> getBonsDeCommandeEnvoyeeParCurrentUser() {
+        return bonService.getBonsDeCommandeEnvoyeeParCurrentUser();
+    }
+    @GetMapping("/mes-bons-livraison")
+    public List<Bon> getBonsDeLivraisonEnvoyeeParCurrentUser() {
+        return bonService.getBonsDeLivraisonEnvoyeeParCurrentUser();
+    }
 
 /*************** Code QR  *********************************************/
 

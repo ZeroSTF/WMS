@@ -15,5 +15,8 @@ public interface IBonService {
     List<Transaction> findByUser(User user);
 
     Bon createBonCommande(CreateBonRequest request);
+    Long count();
+    List<Bon> getBonsDeLivraisonEnvoyeeParCurrentUser();
+    List<Bon> getBonsDeCommandeEnvoyeeParCurrentUser();
 
 }

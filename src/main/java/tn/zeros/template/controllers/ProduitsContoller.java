@@ -65,4 +65,9 @@ public class ProduitsContoller {
         produitsService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/produits/count")
+    public Long getProduitsCount() {
+        return produitsService.produitscount();
+    }
 }

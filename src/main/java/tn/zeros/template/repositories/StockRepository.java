@@ -19,4 +19,5 @@ public interface StockRepository extends JpaRepository<Stock,Long> {
     Stock findByUserId(Long userId);
 
     //Optional<StockItem> findByUserAndProduit(User user, Produits produit);
+
 }

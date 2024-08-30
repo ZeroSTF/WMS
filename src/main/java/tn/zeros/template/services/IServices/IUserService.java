@@ -24,4 +24,6 @@ public interface IUserService {
 
     User findById(Long receiverId);
     //User getCurrentUser();
+    Long usercount();
+    User getCurrentUser();
 }

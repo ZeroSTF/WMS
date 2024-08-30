@@ -30,8 +30,7 @@ public class BonService implements IBonService {
     private final TransactionRepository transactionRepository;
     private final UserRepository userRepository;
     private final StockItemRepository stockItemRepository;
-
-
+    private final UserService userService;
 
 
     @Override
@@ -57,7 +56,21 @@ public class BonService implements IBonService {
     public void deleteById(Long id) {
         bonRepository.deleteById(id);
     }
+    @Override
+    public Long count() {
+        return bonRepository.countByType(BonType.livraison);
+    }
 
+    @Override
+    public List<Bon> getBonsDeLivraisonEnvoyeeParCurrentUser() {
+        User currentUser = userService.getCurrentUser();
+        return bonRepository.findByTypeAndSender(BonType.livraison, currentUser);
+    }
+    @Override
+    public List<Bon> getBonsDeCommandeEnvoyeeParCurrentUser() {
+        User currentUser = userService.getCurrentUser();
+        return bonRepository.findByTypeAndSender(BonType.commande, currentUser);
+    }
 
 
     @Override

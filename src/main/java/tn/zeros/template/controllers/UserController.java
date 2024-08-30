@@ -36,6 +36,11 @@ public class UserController {
         }
     }
 
+    @GetMapping("/users/count")
+    public Long getUserCount() {
+        return userService.usercount();
+    }
+
    /* @GetMapping("/userByemail")
     public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
         User user = userService.loadUserByEmail(email);

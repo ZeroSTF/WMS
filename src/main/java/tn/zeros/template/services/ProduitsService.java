@@ -35,4 +35,9 @@ public class ProduitsService implements IProduitsService {
         produitRepository.deleteById(id);
     }
 
+    @Override
+    public Long produitscount(){
+        return produitRepository.count();
+    }
+
 }
