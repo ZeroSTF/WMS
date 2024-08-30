@@ -25,7 +25,7 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<Boolean> registerUser(@RequestBody RegistrationDTO body){
         log.info(body.toString());
-        User user = new User(null, body.getEmail(), body.getPassword(), null, null);
+        User user = new User(null, body.getEmail(), body.getPassword(), null, null,null,null,null,null,null,null,null,null,null,null,null,null);
         User registeredUser = userService.registerUser(user);
         if (registeredUser != null) {
             return ResponseEntity.ok(true);

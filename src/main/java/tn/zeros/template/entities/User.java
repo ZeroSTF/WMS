@@ -10,7 +10,6 @@ import tn.zeros.template.entities.enums.UStatus;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -29,10 +28,25 @@ public class User implements Serializable, UserDetails {
     String email;
     String password;
 
+    String code;
+    String societe;
+    String adresse;
+    String mf; // assuming this stands for something specific, e.g., "matricule fiscale"
+    String tel;
+    String fax;
+    String mob;
+    String secteur;
+    String ville;
+    String classeCompt; // assuming this stands for "classe comptable"
+    String devise;
+
     @ManyToMany(fetch = FetchType.EAGER)
     Set<Role> role;
     @Enumerated(EnumType.STRING)
     UStatus status;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Stock stock;
 
     @Override
     @JsonIgnore
@@ -84,5 +98,10 @@ public class User implements Serializable, UserDetails {
     @Override
     public int hashCode() {
         return Objects.hash(email);
+    }
+
+
+    public void setAddress(String adresse) {
+        this.adresse = adresse;
     }
 }

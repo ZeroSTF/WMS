@@ -21,4 +21,9 @@ public interface IUserService {
     void removeUser(Long id) throws IOException;
     User modifyUser(User User);
     User loadUserByEmail(String email);
+
+    User findById(Long receiverId);
+    //User getCurrentUser();
+    Long usercount();
+    User getCurrentUser();
 }
