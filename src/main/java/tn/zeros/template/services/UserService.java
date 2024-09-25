@@ -63,7 +63,7 @@ public class UserService implements IUserService {
                 .orElseThrow(() -> new InvalidCredentialsException("Wrong email or password"));
 
         // Check if the password matches
-        if (!encoder.matches(password, user.getPassword()) || !user.getStatus().equals(UStatus.Active)) {
+        if (!encoder.matches(password, user.getPassword())) {
             throw new InvalidCredentialsException("Wrong email or password");
         }
 
