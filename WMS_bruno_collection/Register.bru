@@ -5,7 +5,14 @@ meta {
 }
 
 post {
-  url: http://localhost:8080/auth/register
-  body: none
+  url: http://localhost:8080/auth/login
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "email": "riadh@esprit.tn",
+    "password": "password"
+  }
 }
